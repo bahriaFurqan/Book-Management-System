@@ -83,20 +83,56 @@ public:
 };
  
 int main() {
-    Library myLibrary;
+   Library myLibrary;
     int choice;
+    string title, authorName, publicationYearStr;
+    int publicationYear;
  
     do {
-        cout << "1. List Books" << endl;
-        cout << "2. Exit" << endl;
+        cout << "1. Add Book" << endl;
+        cout << "2. Remove Book" << endl;
+        cout << "3. List Books" << endl;
+        cout << "4. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
- 
+
         switch (choice) {
         case 1:
-            myLibrary.listBooks();
+            cout << "Enter book title: ";
+            cin.ignore();
+            getline(cin, title);
+            cout << "Enter author name: ";
+            getline(cin, authorName);
+            cout << "Enter publication year: ";
+            cin >> publicationYearStr;
+            try {
+                publicationYear = stoi(publicationYearStr);
+                if (publicationYear <= 0) {
+                    throw invalid_argument("Publication year must be a positive integer.");
+                }
+                Author author(authorName);
+                Book book(title, author, publicationYear);
+                myLibrary.addBook(book);
+            }
+            catch (const invalid_argument& e) {
+                cout << "Invalid input: " << e.what() << endl;
+            }
             break;
         case 2:
+            cout << "Enter book title to remove: ";
+            cin.ignore();
+            getline(cin, title);
+            if (!title.empty()) {
+                myLibrary.removeBook(title);
+            }
+            else {
+                cout << "Empty book title entered. Please try again." << endl;
+            }
+            break;
+        case 3:
+            myLibrary.listBooks();
+            break;
+        case 4:
             cout << "Exiting..." << endl;
             break;
         default:
@@ -104,7 +140,7 @@ int main() {
             break;
         }
         cout << endl;
-    } while (choice != 2);
+    } while (choice != 4);
  
     return 0;
 }
